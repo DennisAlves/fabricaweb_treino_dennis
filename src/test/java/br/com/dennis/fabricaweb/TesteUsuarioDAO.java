@@ -1,12 +1,43 @@
 package br.com.dennis.fabricaweb;
 
+import java.util.List;
+
 import br.com.dennis.fabricaweb.persistencia.entidade.Usuario;
 import br.com.dennis.fabricaweb.persistencia.jdbc.UsuarioDAO;
 
 public class TesteUsuarioDAO {
 
 	public static void main(String[] args) {
-		testCadastrar();
+		//testeSalvar();
+		//testeBuscarPorIde();
+		//testeBuscarTodos();
+		testeAutenticar();
+	}
+	private static void testeAutenticar() {
+		
+		UsuarioDAO  usuarioDAO = new UsuarioDAO();
+		
+		Usuario usu = new Usuario();
+		usu.setLogin("mar");
+		usu.setSenha("123");
+		
+		Usuario usuRetorno = usuarioDAO.autenticar(usu);
+		System.out.println(usuRetorno);
+		
+	}
+	
+	private static void testeBuscarPorIde() {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		Usuario usuario = usuarioDAO.buscaPorId(1);
+		System.out.println(usuario);
+		
+	}
+	private static void testeBuscarTodos() {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		List<Usuario> lista = usuarioDAO.buscarTodos();
+		for(Usuario u: lista){
+		System.out.println(u);
+		}
 	}
 	public static void testCadastrar(){
 		// criando usuario
@@ -47,5 +78,19 @@ public class TesteUsuarioDAO {
 		usuDAO.excluir(usu);
 		
 		System.out.println("excluido com sucesso!!!");
+	}
+	
+	public static void testeSalvar(){
+	
+		Usuario usuario = new Usuario();
+		//usuario.setId(1);
+		usuario.setNome("huehue");
+		usuario.setLogin("hue");
+		usuario.setSenha("huehuehue");
+		UsuarioDAO usuDAO = new UsuarioDAO();
+		usuDAO.salvar(usuario);
+		
+		System.out.println("Salvo com sucesso");
+		
 	}
 }

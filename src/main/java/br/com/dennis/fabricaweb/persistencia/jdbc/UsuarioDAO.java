@@ -4,7 +4,10 @@ import br.com.dennis.fabricaweb.persistencia.entidade.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioDAO {
 	private Connection con = ConexaoFactory.getConnection();
@@ -54,4 +57,99 @@ public class UsuarioDAO {
 		
 	}
 
+	public void salvar(Usuario usuario){
+		if (usuario.getId()!=null){
+			alterar(usuario);
+		}else{
+			cadastrar(usuario);
+		}
+	}
+	/**
+	 * busca de um registro no banco de dados pelo numero do Id do usuario
+	 * @param id eh um inteiro que representa o numero de um id do usuario a ser buscado
+	 * @return um objeto usuario quando encontra ou nulo quando nao encontra
+	 */
+	public Usuario buscaPorId(Integer id){
+		
+		String sql = "Select * from usuario where id =?";
+		try(PreparedStatement preparador = con.prepareStatement(sql)){
+			preparador.setInt(1, id);
+			
+			ResultSet resultado = preparador.executeQuery();
+			// posicionando o cursor no primeiro registro
+			if(resultado.next()){
+				Usuario usuario = new Usuario();
+				usuario.setId(resultado.getInt("id"));
+				usuario.setNome(resultado.getString("nome"));
+				usuario.setLogin(resultado.getString("login"));
+				usuario.setSenha(resultado.getString("senha"));
+				
+				return usuario;
+			}
+			
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	/**
+	 * realiza a busca de todos os registros da tabela de usuarios
+	 * @return	uma lista de objetos Usuario contendo 0 elementos quando nao
+	 * tiver registros ou n elementos quando tiver resultados
+	 */
+	public List<Usuario> buscarTodos(){
+		
+		String sql = "Select * from usuario";
+		List<Usuario> lista = new ArrayList<Usuario>();
+		try(PreparedStatement preparador = con.prepareStatement(sql)){
+			
+			ResultSet resultado = preparador.executeQuery();
+			// posicionando o cursor no primeiro registro
+			while(resultado.next()){
+				Usuario usuario = new Usuario();
+				usuario.setId(resultado.getInt("id"));
+				usuario.setNome(resultado.getString("nome"));
+				usuario.setLogin(resultado.getString("login"));
+				usuario.setSenha(resultado.getString("senha"));
+				// add usuario na lista
+				lista.add(usuario);				
+			}
+			
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+		
+		return lista;
+	}
+	/**
+	 * metodo para autenticar usuario
+	 * @param usuConsulta login e senha para realizar a busca
+	 * @return objeto com os dados do usuario encontrado ou nulo se nao encontrar nada 
+	 */
+	public Usuario autenticar(Usuario usuConsulta){
+		String sql = "Select *from usuario where login=? and senha=?";
+		
+		try(PreparedStatement preparador = con.prepareStatement(sql)){
+			preparador.setString(1, usuConsulta.getLogin());
+			preparador.setString(2, usuConsulta.getSenha());
+			ResultSet resultado = preparador.executeQuery();
+			
+			if(resultado.next()){
+			Usuario usuario = new Usuario();
+			usuario.setId(resultado.getInt("id"));
+			usuario.setNome(resultado.getString("nome"));
+			usuario.setLogin(resultado.getString("login"));
+			usuario.setSenha(resultado.getString("senha"));
+			
+			return usuario;
+			}else{
+				return null;
+			}
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 }
