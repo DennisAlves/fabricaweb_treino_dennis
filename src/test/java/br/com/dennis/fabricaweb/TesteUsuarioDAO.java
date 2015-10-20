@@ -10,8 +10,8 @@ public class TesteUsuarioDAO {
 	public static void main(String[] args) {
 		//testeSalvar();
 		//testeBuscarPorIde();
-		//testeBuscarTodos();
-		testeAutenticar();
+		testeBuscarTodos();
+		//testeAutenticar();
 	}
 	private static void testeAutenticar() {
 		

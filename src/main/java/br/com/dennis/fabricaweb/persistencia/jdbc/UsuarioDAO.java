@@ -58,7 +58,7 @@ public class UsuarioDAO {
 	}
 
 	public void salvar(Usuario usuario){
-		if (usuario.getId()!=null){
+		if (usuario.getId()!=null && usuario.getId()!=0){
 			alterar(usuario);
 		}else{
 			cadastrar(usuario);
@@ -100,7 +100,7 @@ public class UsuarioDAO {
 	 */
 	public List<Usuario> buscarTodos(){
 		
-		String sql = "Select * from usuario";
+		String sql = "Select * from usuario order by id";
 		List<Usuario> lista = new ArrayList<Usuario>();
 		try(PreparedStatement preparador = con.prepareStatement(sql)){
 			
@@ -128,7 +128,7 @@ public class UsuarioDAO {
 	 * @return objeto com os dados do usuario encontrado ou nulo se nao encontrar nada 
 	 */
 	public Usuario autenticar(Usuario usuConsulta){
-		String sql = "Select *from usuario where login=? and senha=?";
+		String sql = "Select *from usuario where login=? and senha=? order by id";
 		
 		try(PreparedStatement preparador = con.prepareStatement(sql)){
 			preparador.setString(1, usuConsulta.getLogin());
